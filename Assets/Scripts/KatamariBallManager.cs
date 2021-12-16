@@ -8,6 +8,9 @@ using Random = System.Random;
 
 public class KatamariBallManager : MonoBehaviour
 {
+    [SerializeField] private float startingRadius;
+    [SerializeField] private AudioClip collectSound;
+    [SerializeField] private DisplayItemPickupUI _displayItemPickupUI;
     //Talks with game manager
     private GameManager _gameManager;
     
@@ -20,24 +23,11 @@ public class KatamariBallManager : MonoBehaviour
     
     public float katamariSpeed;
     public float katamariRadius;
-
     public float totalPickUpSize;
-
-    [SerializeField] private float startingRadius;
-
-    [SerializeField] private AudioClip collectSound;
-    
-    [SerializeField] private DisplayItemPickupUI _displayItemPickupUI;
 
     void Awake()
     {
-        _gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
-        
-        katamariCollider = GetComponent<SphereCollider>();
-        katarmiBall = GetComponent<Transform>();
-        katamariSpeed = _gameManager.startingSpeed;
-        startingRadius = _gameManager.startingSize;
-        katamariRadius = startingRadius;
+        InitializeComponents();
     }
 
     private void Start()
@@ -56,10 +46,6 @@ public class KatamariBallManager : MonoBehaviour
         
         katamariCollider.radius += pickUpItem.itemPickUpRadius * pickUpReward;
         Vector3 newRadius = new Vector3(katamariCollider.radius, katamariCollider.radius, katamariCollider.radius);
-        
-        //Didn't really like it scaling everything, Could create a secondary object holder clone that sources the 
-        //rotation and position but that seems silly
-        //katarmiBall.localScale = newRadius/2;
 
         totalPickUpSize += pickUpItem.itemPickUpRadius * pickUpInfluence;
         katamariSpeed += pickUpItem.itemPickUpRadius * pickUpSpeedIncrease;
@@ -75,6 +61,15 @@ public class KatamariBallManager : MonoBehaviour
         Vector3 localScaleStarting = new Vector3(startingRadius, startingRadius, startingRadius);
         
         katarmiBall.localScale = localScaleStarting;
-        //katamariCollider.radius = startingRadius;
+    }
+
+    void InitializeComponents()
+    {
+        _gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+        katamariCollider = GetComponent<SphereCollider>();
+        katarmiBall = GetComponent<Transform>();
+        katamariSpeed = _gameManager.startingSpeed;
+        startingRadius = _gameManager.startingSize;
+        katamariRadius = startingRadius;
     }
 }
